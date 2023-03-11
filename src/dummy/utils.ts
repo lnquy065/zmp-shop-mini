@@ -35,6 +35,8 @@ export const createProductDummy = ({
     options: getRandomInt(1, 0) === 0 ? [] : listProductOptions,
   };
   productsDummy.push(product);
+  console.log({ product });
+
   return product;
 };
 
@@ -50,6 +52,7 @@ export const createProductCategoriesDummy = ({
       createProductDummy({ id: productsDummy.length, storeId })
     );
   }
+  console.log({ createProducts });
   return createProducts;
 };
 
@@ -84,5 +87,7 @@ export const createStoreDummy = (num: number) => {
   //   listProducts: [readOnlyProduct],
   //   categories: listCategories,
   // });
+  console.log(JSON.stringify(storesDummy[0]));
+
   return storesDummy;
 };

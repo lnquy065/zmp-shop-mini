@@ -5,6 +5,10 @@ import { Address, HeaderType, orderOfStore, Product, ProductInfoPicked, Store } 
 import { getRandomInt } from './utils';
 import { filter } from './constants/referrence';
 
+
+console.log(createStoreDummy(1)[0]);
+console.log(productsDummy);
+
 export const storeState = atom<Store>({
   key: 'user',
   default: createStoreDummy(1)[0],
