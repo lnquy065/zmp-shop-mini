@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import { CategorySchema } from "./interfaces/CategorySchema";
+import { ProductSchema } from "./interfaces/ProductSchema";
 
 export type OrderStatus = "pending" | "shipping" | "finish";
 
@@ -23,11 +25,11 @@ export type CartProduct = {
 
 export type Product = {
   id: number;
-  storeId: number;
+  vendorId: number;
   imgProduct: string;
-  nameProduct: string;
-  salePrice: number | string;
-  retailPrice: number | string;
+  name: string;
+  price: number | string;
+  specialPrice: number | string;
   description: string;
   options: Options[];
 };
@@ -40,8 +42,8 @@ export type Store = {
   followers: number;
   address: string;
   type: string;
-  categories: string[];
-  listProducts: Product[];
+  categories?: CategorySchema[];
+  listProducts: ProductSchema[];
 };
 
 export type orderOfStore = {

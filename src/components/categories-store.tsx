@@ -1,12 +1,13 @@
-import React, { SyntheticEvent, useRef } from 'react';
-import { Box, Icon, Select } from 'zmp-ui';
+import React, { SyntheticEvent, useRef } from "react";
+import { Box, Icon, Select } from "zmp-ui";
 // import categoriesProductsDummy from '../../dummy/category-products';
-import { cx } from '../utils';
+import { cx } from "../utils";
+import { CategorySchema } from "../interfaces/CategorySchema";
 
 const { Option } = Select;
 
 type CategoryStoreProps = {
-  categories: string[];
+  categories: CategorySchema[];
   activeCate: number;
   setActiveCate: (index) => void;
   activeFilter: string;
@@ -28,26 +29,34 @@ const CategoriesStore = ({
   return (
     <div className="bg-white pb-2">
       <div className="overflow-x-auto flex flex-row text-base mx-4">
-        {categories?.map((category, index) => (
+        {categories?.map((category) => (
           <div
-            key={category}
+            key={category.id}
             className={cx(
-              'mr-4 flex-none pb-2',
-              activeCate === index
-                ? 'text-primary font-semibold border-b-2 border-primary'
-                : 'text-gray-500'
+              "mr-4 flex-none pb-2",
+              activeCate === category.id
+                ? "text-primary font-semibold border-b-2 border-primary"
+                : "text-gray-500"
             )}
             onClick={() => {
-              setActiveCate(index);
+              setActiveCate(category.id);
             }}
             role="button"
           >
-            {category}
+            {category.name}
           </div>
         ))}
       </div>
-      <Box flex flexDirection="row" justifyContent="space-between" alignItems="center" m={4}>
-        <div className=" text-base font-normal text-gray-500">{quantity} Sản phẩm</div>
+      <Box
+        flex
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        m={4}
+      >
+        <div className=" text-base font-normal text-gray-500">
+          {quantity} Sản phẩm
+        </div>
         <div className="relative w-32">
           <Select
             label=""

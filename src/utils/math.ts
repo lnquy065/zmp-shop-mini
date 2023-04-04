@@ -13,7 +13,7 @@ export const calcTotalPriceOrder = (listOrder: CartProduct[]) => {
     (total, item) =>
       total +
       Number(item.order.quantity) *
-        Number(productsDummy.find((prod) => prod.id === item.id)?.salePrice),
+        Number(productsDummy.find((prod) => prod.id === item.id)?.price),
     0
   );
   return result;

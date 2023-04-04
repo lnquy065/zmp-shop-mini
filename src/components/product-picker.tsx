@@ -1,25 +1,32 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { createPortal } from 'react-dom';
-import ImageRatio from '../components/img-ratio';
-import { CartProduct, orderOfStore, Product, Store } from '../models';
-import ButtonFixed from '../components/button-fixed/button-fixed';
-import cx from '../utils/cx';
-import { convertPrice, getImgUrl } from '../utils';
-import { Box, Button, Icon, Input, Radio, Sheet, Text } from 'zmp-ui';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { cartState, openProductPickerState, productInfoPickedState, storeState } from '../state';
-import { useAddProductToCart, useResetProductPicked } from '../hooks';
-import { useNavigate } from 'react-router-dom';
+import { createPortal } from "react-dom";
+import ImageRatio from "../components/img-ratio";
+import { CartProduct, orderOfStore, Product, Store } from "../models";
+import ButtonFixed from "../components/button-fixed/button-fixed";
+import cx from "../utils/cx";
+import { convertPrice, getImgUrl } from "../utils";
+import { Box, Button, Icon, Input, Radio, Sheet, Text } from "zmp-ui";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  cartState,
+  openProductPickerState,
+  productInfoPickedState,
+  storeState,
+} from "../state";
+import { useAddProductToCart, useResetProductPicked } from "../hooks";
+import { useNavigate } from "react-router-dom";
 
 const ProductPicker = () => {
   const { productId, isUpdate } = useRecoilValue(productInfoPickedState);
-  const [openSheet, setOpenSheet] = useRecoilState<boolean>(openProductPickerState);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, any> | undefined>(
-    undefined
+  const [openSheet, setOpenSheet] = useRecoilState<boolean>(
+    openProductPickerState
   );
-  const [note, setNote] = useState('');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, any> | undefined
+  >(undefined);
+  const [note, setNote] = useState("");
 
   const cart = useRecoilValue(cartState);
   const btnRef = useRef<HTMLDivElement | null>(null);
@@ -33,13 +40,15 @@ const ProductPicker = () => {
 
   const resetOptions = () => {
     setQuantity(1);
-    setNote('');
+    setNote("");
     setSelectedOptions(undefined);
   };
 
   const product: Product | undefined = useMemo(() => {
     if (store) {
-      const currentProduct = store.listProducts.find((item) => item.id === Number(productId));
+      const currentProduct = store.listProducts.find(
+        (item) => item.id === Number(productId)
+      );
       return currentProduct;
     }
     return undefined;
@@ -51,7 +60,9 @@ const ProductPicker = () => {
 
   const cartProduct: CartProduct | undefined = useMemo(() => {
     if (product && cartStore) {
-      const currentProductOrder = cartStore.listOrder.find((ord) => ord.id === product.id);
+      const currentProductOrder = cartStore.listOrder.find(
+        (ord) => ord.id === product.id
+      );
 
       if (currentProductOrder) {
         return { ...currentProductOrder };
@@ -76,7 +87,7 @@ const ProductPicker = () => {
     if (cartProduct && openSheet) {
       const { quantity, note, ...data } = cartProduct.order;
       setQuantity(quantity);
-      setNote(note || '');
+      setNote(note || "");
       setSelectedOptions((prev) => ({ ...prev, ...data }));
     }
   }, [product, cartProduct, openSheet]);
@@ -160,13 +171,19 @@ const ProductPicker = () => {
             <div className="w-full flex flex-row items-center justify-between overflow-hidden h-24 m-4 ">
               <div className="flex flex-row items-center">
                 <div className="w-24 flex-none">
-                  <ImageRatio src={getImgUrl(product.imgProduct)} alt="image product" ratio={1} />
+                  <ImageRatio
+                    src={getImgUrl(product.imgProduct)}
+                    alt="image product"
+                    ratio={1}
+                  />
                 </div>
                 <div className=" p-3 pr-0">
-                  <div className="line-clamp-2 text-sm break-words">{product.nameProduct}</div>
+                  <div className="line-clamp-2 text-sm break-words">
+                    {product.name}
+                  </div>
                   <span className=" pt-1 font-semibold text-sm text-primary">
                     <span className=" font-normal text-xs text-primary">đ</span>
-                    {convertPrice(product.salePrice)}
+                    {convertPrice(product.price)}
                   </span>
                 </div>
               </div>
@@ -202,7 +219,7 @@ const ProductPicker = () => {
             {selectedOptions &&
               product.options?.map((option, index) => (
                 <div key={option.name}>
-                  <div className={cx('title-type-picker')}>{option.title}</div>
+                  <div className={cx("title-type-picker")}>{option.title}</div>
                   <Radio.Group
                     onChange={(val) => {
                       setSelectedOptions((prev) => ({
@@ -217,9 +234,17 @@ const ProductPicker = () => {
                       <Box
                         m={4}
                         key={type.value}
-                        className={cx(indexType === 0 && index === 1 && 'sheet-modal-swipe-step')}
+                        className={cx(
+                          indexType === 0 &&
+                            index === 1 &&
+                            "sheet-modal-swipe-step"
+                        )}
                       >
-                        <Radio name={option.name} value={type.value} label={type.label} />
+                        <Radio
+                          name={option.name}
+                          value={type.value}
+                          label={type.label}
+                        />
                       </Box>
                     ))}
                   </Radio.Group>
@@ -235,15 +260,15 @@ const ProductPicker = () => {
                 listBtn={[
                   {
                     id: 1,
-                    content: isUpdate ? 'Xoá sản phẩm' : 'Thanh toán',
-                    type: 'secondary',
+                    content: isUpdate ? "Xoá sản phẩm" : "Thanh toán",
+                    type: "secondary",
                     onClick: () => {
                       if (isUpdate) {
                         deleteProductInCart();
                       } else {
                         addToStore(() =>
                           setTimeout(() => {
-                            navigate('/finish-order');
+                            navigate("/finish-order");
                           }, 100)
                         );
                       }
@@ -252,8 +277,10 @@ const ProductPicker = () => {
                   {
                     id: 2,
                     content:
-                      isUpdate || cartProduct?.order?.quantity! >= 1 ? 'Cập nhật' : 'Thêm vào giỏ',
-                    type: 'primary',
+                      isUpdate || cartProduct?.order?.quantity! >= 1
+                        ? "Cập nhật"
+                        : "Thêm vào giỏ",
+                    type: "primary",
                     onClick: () => {
                       addToStore();
                     },
@@ -263,11 +290,11 @@ const ProductPicker = () => {
                 <Box m={0} flex justifyContent="space-between" pb={4}>
                   <div className=" text-sm">Tổng tiền</div>
                   <div className=" text-lg font-medium text-primary">
-                    {convertPrice(quantity * Number(product.salePrice))} VNĐ
+                    {convertPrice(quantity * Number(product.price))} VNĐ
                   </div>
                 </Box>
               </ButtonFixed>,
-              document.getElementById('app')!
+              document.getElementById("app")!
             )}
           </div>
         </Sheet>

@@ -26,11 +26,11 @@ export const createProductDummy = ({
   const randomPrice = listPrices[getRandomInt(listPrices.length) - 1];
   const product: Product = {
     id,
-    storeId,
+    vendorId: storeId,
     imgProduct: `product-large-${getRandomInt(numProduct)}`,
-    nameProduct: listNameProducts[getRandomInt(listNameProducts.length) - 1],
-    salePrice: randomPrice.salePrice,
-    retailPrice: randomPrice.retailPrice,
+    name: listNameProducts[getRandomInt(listNameProducts.length) - 1],
+    price: randomPrice.salePrice,
+    specialPrice: randomPrice.retailPrice,
     description: listDescriptions[getRandomInt(listDescriptions.length) - 1],
     options: getRandomInt(1, 0) === 0 ? [] : listProductOptions,
   };

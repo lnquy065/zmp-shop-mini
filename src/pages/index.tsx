@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { Input, Page, Spinner } from 'zmp-ui';
-import ButtonFixed from '../components/button-fixed/button-fixed';
-import ButtonPriceFixed from '../components/button-fixed/button-price-fixed';
-import CategoriesStore from '../components/categories-store';
-import CardProductHorizontal from '../components/custom-card/card-product-horizontal';
-import CardShop from '../components/custom-card/card-shop';
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { Input, Page, Spinner } from "zmp-ui";
+import ButtonFixed from "../components/button-fixed/button-fixed";
+import ButtonPriceFixed from "../components/button-fixed/button-price-fixed";
+import CategoriesStore from "../components/categories-store";
+import CardProductHorizontal from "../components/custom-card/card-product-horizontal";
+import CardShop from "../components/custom-card/card-shop";
 
-import { filter } from '../constants/referrence';
-import { Product } from '../models';
+import { filter } from "../constants/referrence";
+import { Product } from "../models";
 import {
   activeCateState,
   activeFilterState,
@@ -16,20 +16,24 @@ import {
   searchProductState,
   storeProductResultState,
   storeState,
-} from '../state';
-import { calcTotalPriceOrder } from '../utils';
-import { useNavigate } from 'react-router-dom';
-import useSetHeader from '../hooks/useSetHeader';
-import { changeStatusBarColor } from '../services';
-import { getConfig } from '../components/config-provider';
+} from "../state";
+import { calcTotalPriceOrder } from "../utils";
+import { useNavigate } from "react-router-dom";
+import useSetHeader from "../hooks/useSetHeader";
+import { changeStatusBarColor } from "../services";
+import { getConfig } from "../components/config-provider";
+import { ProductSchema } from "../interfaces/ProductSchema";
 
 const HomePage: React.FunctionComponent = () => {
   const store = useRecoilValue(storeState);
   const cart = useRecoilValue(cartState);
 
   const [activeCate, setActiveCate] = useRecoilState<number>(activeCateState);
-  const [activeFilter, setActiveFilter] = useRecoilState<string>(activeFilterState);
-  const storeProductResult = useRecoilValue<Product[]>(storeProductResultState);
+  const [activeFilter, setActiveFilter] =
+    useRecoilState<string>(activeFilterState);
+  const storeProductResult = useRecoilValue<ProductSchema[]>(
+    storeProductResultState
+  );
   const setSearchProduct = useSetRecoilState(searchProductState);
   const navigate = useNavigate();
   const setHeader = useSetHeader();
@@ -56,11 +60,11 @@ const HomePage: React.FunctionComponent = () => {
 
   useEffect(() => {
     setHeader({
-      customTitle: getConfig((c) => c.template.searchBar) ? searchBar : '',
+      customTitle: getConfig((c) => c.template.searchBar) ? searchBar : "",
       hasLeftIcon: false,
-      type: 'secondary',
+      type: "secondary",
     });
-    changeStatusBarColor('secondary');
+    changeStatusBarColor("secondary");
   }, []);
 
   return (
@@ -72,7 +76,7 @@ const HomePage: React.FunctionComponent = () => {
             <CategoriesStore
               categories={store.categories!}
               activeCate={activeCate}
-              setActiveCate={(index) => setActiveCate(index)}
+              setActiveCate={(cateId) => setActiveCate(cateId)}
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}
               filter={filter}
@@ -81,16 +85,19 @@ const HomePage: React.FunctionComponent = () => {
             />
           </div>
           <div className="bg-gray-100 h-3" />
-          <div className="bg-white p-3" style={{ marginBottom: totalPrice > 0 ? '120px' : '0px' }}>
+          <div
+            className="bg-white p-3"
+            style={{ marginBottom: totalPrice > 0 ? "120px" : "0px" }}
+          >
             {storeProductResult.map((product) => (
               <div className=" mb-2 w-full" key={product.id}>
                 <CardProductHorizontal
-                  pathImg={product.imgProduct}
-                  nameProduct={product.nameProduct}
-                  salePrice={product.salePrice}
-                  retailPrice={product.retailPrice}
+                  pathImg={product.normalizedName}
+                  nameProduct={product.name}
+                  salePrice={product.price}
+                  retailPrice={product.specialPrice}
                   productId={product.id}
-                  storeId={product.storeId}
+                  storeId={product.vendorId}
                 />
               </div>
             ))}
@@ -101,17 +108,17 @@ const HomePage: React.FunctionComponent = () => {
                 quantity={cart[0].listOrder.length}
                 totalPrice={totalPrice}
                 handleOnClick={() => {
-                  navigate('/finish-order');
+                  navigate("/finish-order");
                 }}
               />
               <ButtonFixed
                 listBtn={[
                   {
                     id: 1,
-                    content: 'Hoàn tất đơn hàng',
-                    type: 'primary',
+                    content: "Hoàn tất đơn hàng",
+                    type: "primary",
                     onClick: () => {
-                      navigate('/finish-order');
+                      navigate("/finish-order");
                     },
                   },
                 ]}

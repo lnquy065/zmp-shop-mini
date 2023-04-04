@@ -1,14 +1,14 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
-import AddressForm from '../constants/address-form';
-import ButtonFixed from '../components/button-fixed/button-fixed';
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import AddressForm from "../constants/address-form";
+import ButtonFixed from "../components/button-fixed/button-fixed";
 
-import { AddressFormType, orderOfStore, Store } from '../models';
-import { calcTotalPriceOrder, convertPrice, cx } from '../utils';
-import { locationVN } from '../dummy';
+import { AddressFormType, orderOfStore, Store } from "../models";
+import { calcTotalPriceOrder, convertPrice, cx } from "../utils";
+import { locationVN } from "../dummy";
 
-import CardStore from '../components/custom-card/card-store';
-import { Box, Button, Input, Page, Select, Text } from 'zmp-ui';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import CardStore from "../components/custom-card/card-store";
+import { Box, Button, Input, Page, Select, Text } from "zmp-ui";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   addressState,
   cartState,
@@ -16,12 +16,12 @@ import {
   productInfoPickedState,
   productState,
   storeState,
-} from '../state';
-import { useNavigate } from 'react-router-dom';
-import CardProductOrder from '../components/custom-card/card-product-order';
-import { changeStatusBarColor, pay } from '../services';
-import useSetHeader from '../hooks/useSetHeader';
-import { getConfig } from '../components/config-provider';
+} from "../state";
+import { useNavigate } from "react-router-dom";
+import CardProductOrder from "../components/custom-card/card-product-order";
+import { changeStatusBarColor, pay } from "../services";
+import useSetHeader from "../hooks/useSetHeader";
+import { getConfig } from "../components/config-provider";
 
 const { Option } = Select;
 const FinishOrder = () => {
@@ -34,8 +34,12 @@ const FinishOrder = () => {
   const setHeader = useSetHeader();
 
   const [currentCity, setCurrentCity] = useState<any>(locationVN[0]);
-  const [currentDistrict, setCurrentDistrict] = useState<any>(locationVN[0].districts[0]);
-  const [currentWard, setCurrentWard] = useState<any>(locationVN[0].districts[0].wards[0]);
+  const [currentDistrict, setCurrentDistrict] = useState<any>(
+    locationVN[0].districts[0]
+  );
+  const [currentWard, setCurrentWard] = useState<any>(
+    locationVN[0].districts[0].wards[0]
+  );
 
   const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(
     locationVN[0].districts[0].id
@@ -48,7 +52,7 @@ const FinishOrder = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cart.length === 0) navigate('/');
+    if (cart.length === 0) navigate("/");
     else {
       setOrderInfo(cart[0]);
     }
@@ -71,7 +75,7 @@ const FinishOrder = () => {
     let handleOnSelect: (id: string) => void;
 
     switch (item.name) {
-      case 'city':
+      case "city":
         listOptions = locationVN;
         value = currentCity.id;
         handleOnSelect = (cityId) => {
@@ -85,7 +89,7 @@ const FinishOrder = () => {
           setSelectedWardId(firstWard.id);
         };
         break;
-      case 'district':
+      case "district":
         listOptions = currentCity.districts;
         value = selectedDistrictId;
 
@@ -100,7 +104,7 @@ const FinishOrder = () => {
           setSelectedWardId(firstWard.id);
         };
         break;
-      case 'ward':
+      case "ward":
         listOptions = currentDistrict.wards;
         value = selectedWardId;
         handleOnSelect = (wardId) => setSelectedWardId(wardId);
@@ -115,8 +119,8 @@ const FinishOrder = () => {
   };
 
   useEffect(() => {
-    setHeader({ title: 'Đơn đặt hàng', type: 'secondary' });
-    changeStatusBarColor('secondary');
+    setHeader({ title: "Đơn đặt hàng", type: "secondary" });
+    changeStatusBarColor("secondary");
   }, []);
 
   return (
@@ -133,12 +137,14 @@ const FinishOrder = () => {
           </Box>
           <Box mx={3} mb={2}>
             {orderInfo.listOrder.map((product) => {
-              const productInfo = listProducts.find((prod) => prod.id === product.id);
+              const productInfo = listProducts.find(
+                (prod) => prod.id === product.id
+              );
               return (
                 <CardProductOrder
                   pathImg={productInfo!.imgProduct}
-                  nameProduct={productInfo!.nameProduct}
-                  salePrice={productInfo!.salePrice}
+                  nameProduct={productInfo!.name}
+                  salePrice={productInfo!.price}
                   quantity={product!.order.quantity}
                   key={productInfo!.id}
                   id={product.id}
@@ -150,7 +156,10 @@ const FinishOrder = () => {
           <Box m={4} flex flexDirection="row" justifyContent="space-between">
             <span className=" text-base font-medium">Đơn hàng</span>
             <span className=" text-base font-medium text-primary">
-              {convertPrice(calcTotalPriceOrder(orderInfo.listOrder).toString())}đ
+              {convertPrice(
+                calcTotalPriceOrder(orderInfo.listOrder).toString()
+              )}
+              đ
             </span>
           </Box>
           <Box m={0} px={4} className=" bg-white">
@@ -159,10 +168,14 @@ const FinishOrder = () => {
             </Text>
 
             {AddressForm.map((item: AddressFormType) => {
-              const { listOptions, value, handleOnSelect } = filterSelectionInput(item);
+              const { listOptions, value, handleOnSelect } =
+                filterSelectionInput(item);
 
               return (
-                <div key={item.name} className={cx('py-3', item.name !== 'ward' && 'border-b')}>
+                <div
+                  key={item.name}
+                  className={cx("py-3", item.name !== "ward" && "border-b")}
+                >
                   <Text
                     size="large"
                     bold
@@ -171,7 +184,7 @@ const FinishOrder = () => {
                     {item.label}
                   </Text>
                   <Box className="relative" m={0}>
-                    {item.type === 'select' ? (
+                    {item.type === "select" ? (
                       <Select
                         // key={value}
                         id={item.name}
@@ -183,7 +196,11 @@ const FinishOrder = () => {
                         }}
                       >
                         {listOptions?.map((option) => (
-                          <Option key={option.id} value={option.id} title={option.name} />
+                          <Option
+                            key={option.id}
+                            value={option.id}
+                            title={option.name}
+                          />
                         ))}
                       </Select>
                     ) : (
