@@ -49,6 +49,7 @@ const ProductPicker = () => {
       const currentProduct = store.listProducts.find(
         (item) => item.id === Number(productId)
       );
+      console.log("found product", currentProduct);
       return currentProduct;
     }
     return undefined;

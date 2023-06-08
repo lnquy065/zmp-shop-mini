@@ -43,3 +43,6 @@ www/
 prettier.config.js
 
 .idea
+.vscode
+
+yarn.lock

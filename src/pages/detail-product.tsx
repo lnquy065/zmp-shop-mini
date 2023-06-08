@@ -116,19 +116,21 @@ const DetailProduct = () => {
               alt=""
               className="w-full h-auto"
             />
-            {salePercentage && (
-              <div className="absolute top-2.5 right-2.5 text-white font-medium text-sm px-2 py-1 bg-[#FF9743] w-auto h-auto rounded-lg">
-                -{salePercentage}%
-              </div>
-            )}
+            {/*{salePercentage && (*/}
+            {/*  <div className="absolute top-2.5 right-2.5 text-white font-medium text-sm px-2 py-1 bg-[#FF9743] w-auto h-auto rounded-lg">*/}
+            {/*    -{salePercentage}%*/}
+            {/*  </div>*/}
+            {/*)}*/}
             <Box m={0} p={4} className="border-b">
               <div className=" text-lg">{product?.name}</div>
               <span className=" pt-1 font-semibold text-base text-primary">
-                <span className=" font-normal text-xs text-primary">đ</span>
-                {convertPrice(product.price)}
+                <>
+                  <span className=" font-normal text-xs text-primary">đ</span>
+                  {convertPrice(product.price)}
+                </>
               </span>
               <span className=" pl-2 pt-1 font-medium text-sm text-zinc-400">
-                đ{convertPrice(product.specialPrice)}
+                <>đ{convertPrice(product.specialPrice)}</>
               </span>
             </Box>
             <Box

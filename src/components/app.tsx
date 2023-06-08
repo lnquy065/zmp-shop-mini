@@ -38,6 +38,9 @@ const FinishOrder = React.lazy(() => import("../pages/finish-order"));
 const queryClient = new QueryClient();
 
 import sdk from "zmp-sdk";
+import CategoryPage from "../pages/category";
+import { UserPage } from "../pages/user";
+import { SearchPage } from "../pages/search";
 
 const MyApp = () => {
   useEffect(() => {
@@ -94,6 +97,18 @@ const MyApp = () => {
                       <Route
                         path="/detail-product/:productId"
                         element={<DetailProduct></DetailProduct>}
+                      ></Route>
+                      <Route
+                        path="/category"
+                        element={<CategoryPage></CategoryPage>}
+                      ></Route>
+                      <Route
+                        path="/user"
+                        element={<UserPage></UserPage>}
+                      ></Route>
+                      <Route
+                        path="/search"
+                        element={<SearchPage></SearchPage>}
                       ></Route>
                     </AnimationRoutes>
                     <ProductPicker />

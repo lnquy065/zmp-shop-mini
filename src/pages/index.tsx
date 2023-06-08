@@ -23,6 +23,7 @@ import useSetHeader from "../hooks/useSetHeader";
 import { changeStatusBarColor } from "../services";
 import { getConfig } from "../components/config-provider";
 import { ProductSchema } from "../interfaces/ProductSchema";
+import { PageLayout } from "../components/layout/page-layout";
 
 const HomePage: React.FunctionComponent = () => {
   const store = useRecoilValue(storeState);
@@ -68,7 +69,7 @@ const HomePage: React.FunctionComponent = () => {
   }, []);
 
   return (
-    <Page>
+    <PageLayout>
       {store && storeProductResult && (
         <>
           <div className="bg-primary">
@@ -128,7 +129,7 @@ const HomePage: React.FunctionComponent = () => {
           )}
         </>
       )}
-    </Page>
+    </PageLayout>
   );
 };
 
