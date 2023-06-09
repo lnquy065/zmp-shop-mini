@@ -16,4 +16,5 @@ export interface CategorySchema {
   parentId: number;
   parent: string;
   children: string[];
+  imageUrl: string;
 }

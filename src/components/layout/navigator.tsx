@@ -7,6 +7,7 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 interface NavigatorProps {
   children?: ReactNode;
@@ -43,7 +44,11 @@ const NavigatorItem = [
 export const Navigator = (props: NavigatorProps) => {
   // get current react route
   const currentPath = window.location.pathname;
-  console.log(currentPath);
+  const navigate = useNavigate();
+
+  const onClickNavigatorItem = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className="absolute bottom-0 left-0 w-full drop-shadow">
@@ -51,9 +56,9 @@ export const Navigator = (props: NavigatorProps) => {
         {NavigatorItem.map((item, index) => {
           const isActive = currentPath === item.path;
           return (
-            <a
+            <span
               key={item.name}
-              href={item.path}
+              onClick={() => onClickNavigatorItem(item.path)}
               className={clsx(
                 "transition-all flex justify-center items-center w-full py-2",
                 {
@@ -68,7 +73,7 @@ export const Navigator = (props: NavigatorProps) => {
                   })}
                 />
               }
-            </a>
+            </span>
           );
         })}
       </nav>

@@ -18,15 +18,31 @@ import {
   storeState,
 } from "../state";
 import { calcTotalPriceOrder } from "../utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSetHeader from "../hooks/useSetHeader";
 import { changeStatusBarColor } from "../services";
 import { getConfig } from "../components/config-provider";
 import { ProductSchema } from "../interfaces/ProductSchema";
 import { PageLayout } from "../components/layout/page-layout";
+import { useShop } from "../hooks/useShop";
+import {
+  ChevronRightIcon,
+  HomeIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
+import { Carousel } from "react-responsive-carousel";
+import { useBanners } from "../hooks/useBanners";
+import useNewArrivalProducts from "../hooks/useNewArrivalProducts";
+import { ProductCardSquare } from "../components/cards/product-card-square";
+import { useCategories } from "../hooks/useCategories";
+import { HomeCarousel } from "../components/pages/home/home-carousel";
+import { HomeNewArrivals } from "../components/pages/home/home-new-arrivals";
+import { HomeCategories } from "../components/pages/home/home-categories";
 
 const HomePage: React.FunctionComponent = () => {
-  const store = useRecoilValue(storeState);
+  const { data: store } = useShop();
+  const { data: categories } = useCategories();
+
   const cart = useRecoilValue(cartState);
 
   const [activeCate, setActiveCate] = useRecoilState<number>(activeCateState);
@@ -37,96 +53,52 @@ const HomePage: React.FunctionComponent = () => {
   );
   const setSearchProduct = useSetRecoilState(searchProductState);
   const navigate = useNavigate();
-  const setHeader = useSetHeader();
 
-  const totalPrice = useMemo<Number>(() => {
-    if (cart.length > 0) return calcTotalPriceOrder(cart[0].listOrder);
-    return 0;
-  }, [cart]);
-
-  const handleInputSearch = useCallback((text: string) => {
-    setSearchProduct(text);
-  }, []);
-
-  const searchBar = useMemo(
-    () => (
-      <Input.Search
-        placeholder="Tìm kiếm sản phẩm"
-        onSearch={handleInputSearch}
-        className="cus-input-search"
-      />
-    ),
-    []
-  );
-
-  useEffect(() => {
-    setHeader({
-      customTitle: getConfig((c) => c.template.searchBar) ? searchBar : "",
-      hasLeftIcon: false,
-      type: "secondary",
-    });
-    changeStatusBarColor("secondary");
-  }, []);
+  const onClickSearch = () => {
+    navigate("/search");
+  };
 
   return (
-    <PageLayout>
-      {store && storeProductResult && (
+    <PageLayout
+      title={store?.name || ""}
+      icon={() =>
+        store && (
+          <img src={store.logo} alt={store.name} className="h-8 w-auto" />
+        )
+      }
+    >
+      {store && (
         <>
-          <div className="bg-primary">
-            <CardShop storeInfo={store} />
-            <CategoriesStore
-              categories={store.categories!}
-              activeCate={activeCate}
-              setActiveCate={(cateId) => setActiveCate(cateId)}
-              activeFilter={activeFilter}
-              setActiveFilter={setActiveFilter}
-              filter={filter}
-              quantity={storeProductResult.length}
-              storeId={store.id}
-            />
-          </div>
-          <div className="bg-gray-100 h-3" />
-          <div
-            className="bg-white p-3"
-            style={{ marginBottom: totalPrice > 0 ? "120px" : "0px" }}
-          >
-            {storeProductResult.map((product) => (
-              <div className=" mb-2 w-full" key={product.id}>
-                <CardProductHorizontal
-                  pathImg={product.normalizedName}
-                  nameProduct={product.name}
-                  salePrice={product.price}
-                  retailPrice={product.specialPrice}
-                  productId={product.id}
-                  storeId={product.vendorId}
-                />
-              </div>
-            ))}
-          </div>
-          {totalPrice > 0 && (
-            <>
-              <ButtonPriceFixed
-                quantity={cart[0].listOrder.length}
-                totalPrice={totalPrice}
-                handleOnClick={() => {
-                  navigate("/finish-order");
+          <div className="px-4 bg-primary rounded-b-full h-8 mb-10 -mt-1">
+            <div className="pt-2 relative">
+              <Input
+                placeholder={"Tìm sản phẩm..."}
+                onClick={() => {
+                  navigate("/search");
                 }}
+                readOnly
               />
-              <ButtonFixed
-                listBtn={[
-                  {
-                    id: 1,
-                    content: "Hoàn tất đơn hàng",
-                    type: "primary",
-                    onClick: () => {
-                      navigate("/finish-order");
-                    },
-                  },
-                ]}
-                zIndex={99}
-              />
-            </>
-          )}
+              <MagnifyingGlassIcon className="absolute right-3 top-6 w-6 h-6 text-gray-400" />
+            </div>
+          </div>
+
+          <div className="rounded-xl">
+            <HomeCarousel />
+          </div>
+          {/*NEW ARRIVALS*/}
+          <div>
+            <HomeNewArrivals />
+          </div>
+
+          {/*HOME CATEGORIES*/}
+          <div className="">
+            <div className="bg-primary h-8 -mt-8">
+              <div className="w-full h-full bg-gray-100 rounded-br-3xl"></div>
+            </div>
+            <div className="bg-primary rounded-tl-3xl pb-4">
+              <HomeCategories />
+            </div>
+          </div>
         </>
       )}
     </PageLayout>

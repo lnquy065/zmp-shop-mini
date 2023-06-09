@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button, Input } from "zmp-ui";
 import useProducts from "../hooks/useProducts";
-import { ProductCard } from "../components/product-card";
+import { ProductCardRow } from "../components/cards/product-card-row";
 
 interface SearchPageProps {
   children?: ReactNode;
@@ -19,22 +19,27 @@ export const SearchPage = (props: SearchPageProps) => {
 
   return (
     <PageLayout title="Tìm kiếm sản phẩm" icon={MagnifyingGlassCircleIcon}>
-      <div className="p-2 flex items-center">
-        <Input
-          type="text"
-          maxLength={200}
-          placeholder={"Nhập tên sản phẩm..."}
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-        />
-        <button className="my-1 h-auto px-4 bg-primary text-white self-stretch rounded-lg ml-2">
-          <MagnifyingGlassIcon className="w-6 h-6" />
-        </button>
+      <div className="flex gap-x-2 flex-col">
+        <div className="px-2 py-2 bg-primary sticky -top-1">
+          <div className="flex">
+            <Input
+              type="text"
+              maxLength={200}
+              placeholder={"Nhập tên sản phẩm..."}
+              value={searchKeyword}
+              autoFocus
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+            <button className="my-1 h-auto px-4 bg-white text-primary self-stretch rounded-lg ml-2">
+              <MagnifyingGlassIcon className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
       </div>
       {/*SEARCH RESULTS*/}
-      <div className="flex flex-col px-2 pt-4 border-t ">
+      <div className="px-2 grow my-4 bg-gray-100 flex flex-col gap-y-4 overflow-y-auto">
         {products?.map((product) => (
-          <ProductCard product={product} />
+          <ProductCardRow product={product} />
         ))}
         {searchKeyword && products?.length === 0 && (
           <div className="flex flex-col justify-center items-center grow mt-16">

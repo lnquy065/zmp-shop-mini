@@ -41,6 +41,7 @@ import sdk from "zmp-sdk";
 import CategoryPage from "../pages/category";
 import { UserPage } from "../pages/user";
 import { SearchPage } from "../pages/search";
+import { Navigator } from "./layout/navigator";
 
 const MyApp = () => {
   useEffect(() => {
@@ -111,6 +112,7 @@ const MyApp = () => {
                         element={<SearchPage></SearchPage>}
                       ></Route>
                     </AnimationRoutes>
+                    <Navigator />
                     <ProductPicker />
                   </ZMPRouter>
                 </SnackbarProvider>
