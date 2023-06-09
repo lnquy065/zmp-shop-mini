@@ -46,3 +46,4 @@ prettier.config.js
 .vscode
 
 yarn.lock
+package-lock.json
