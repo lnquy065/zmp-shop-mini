@@ -60,7 +60,6 @@ const HomePage: React.FunctionComponent = () => {
 
   return (
     <PageLayout
-      title={store?.name || ""}
       icon={() =>
         store && (
           <img src={store.logo} alt={store.name} className="h-8 w-auto" />

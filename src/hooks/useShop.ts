@@ -9,7 +9,7 @@ export const useShop = () => {
       name: "Shop 1",
       description: "Shop 1 description",
       url: "https://picsum.photos/200/600",
-      logo: "https://picsum.photos/200/600",
+      logo: "https://vinaspar.co/Themes/vinaspar/Content/images/logo.png",
       primaryColor: "#000000",
       secondaryColor: "#ffffff",
     };
