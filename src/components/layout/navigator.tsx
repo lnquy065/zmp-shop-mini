@@ -7,7 +7,7 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "zmp-ui";
 
 interface NavigatorProps {
   children?: ReactNode;

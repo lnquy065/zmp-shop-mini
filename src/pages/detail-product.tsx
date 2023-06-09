@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Product, orderOfStore } from "../models";
 import {
   calcSalePercentage,
@@ -10,7 +10,7 @@ import ButtonFixed, {
   ButtonType,
 } from "../components/button-fixed/button-fixed";
 import ButtonPriceFixed from "../components/button-fixed/button-price-fixed";
-import { Box, Icon, Page } from "zmp-ui";
+import { Box, Button, Icon, Input, Page } from "zmp-ui";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   cartState,
@@ -23,137 +23,192 @@ import { useParams, useNavigate } from "react-router-dom";
 import { changeStatusBarColor } from "../services";
 import useSetHeader from "../hooks/useSetHeader";
 import { ProductSchema } from "../interfaces/ProductSchema";
+import useProductDetail from "../hooks/useProductDetail";
+import { PageLayout } from "../components/layout/page-layout";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.css";
+import {
+  ChevronLeftIcon,
+  MinusCircleIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
+import { priceFormat, priceFormatByProduct } from "../utils/price-format";
+import { MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
+
+const mockImage = [
+  {
+    imageUrl: "https://picsum.photos/400/200",
+  },
+  {
+    imageUrl: "https://picsum.photos/400/201",
+  },
+  {
+    imageUrl: "https://picsum.photos/400/202",
+  },
+];
+
+const mockOption = {
+  labels: ["Loại hạt", "Size"],
+  options: [
+    {
+      id: 1,
+      labels: ["Arabica", "S"],
+      price: 22000,
+    },
+    {
+      id: 2,
+      labels: ["Arabica", "M"],
+      price: 25000,
+    },
+    {
+      id: 3,
+      labels: ["Arabica", "L"],
+      price: 27000,
+    },
+    {
+      id: 4,
+      labels: ["Rubusta", "S"],
+      price: 18000,
+    },
+    {
+      id: 5,
+      labels: ["Rubusta", "M"],
+      price: 20000,
+    },
+    {
+      id: 6,
+      labels: ["Rubusta", "L"],
+      price: 23000,
+    },
+    {
+      id: 7,
+      labels: ["Mix", "S"],
+      price: 18000,
+    },
+    {
+      id: 8,
+      labels: ["Mix", "M"],
+      price: 20000,
+    },
+    {
+      id: 9,
+      labels: ["Mix", "L"],
+      price: 23000,
+    },
+  ],
+};
 
 const DetailProduct = () => {
-  const storeInfo = useRecoilValue(storeState);
-  const cart = useRecoilValue(cartState);
-  let { productId } = useParams();
-
-  const setOpenSheet = useSetRecoilState(openProductPickerState);
-  const setProductInfoPicked = useSetRecoilState(productInfoPickedState);
-
   const navigate = useNavigate();
-  const setHeader = useSetHeader();
+  let { productId } = useParams();
+  const { data: product } = useProductDetail(productId);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(mockOption.options[0]);
 
-  const product: ProductSchema | undefined = useMemo(() => {
-    if (storeInfo) {
-      const currentProduct = storeInfo.listProducts.find(
-        (item) => item.id === Number(productId)
-      );
-      return currentProduct;
-    }
-    return undefined;
-  }, [productId]);
+  const onClickIncrease = () => {
+    if (quantity === 99) return;
+    setQuantity((prev) => prev + 1);
+  };
 
-  const salePercentage = useMemo(
-    () => calcSalePercentage(product?.price!, product?.specialPrice!),
-    [product]
-  );
+  const onClickDecrease = () => {
+    if (quantity === 1) return;
+    setQuantity((prev) => prev - 1);
+  };
 
-  const cartStore: orderOfStore | undefined = useMemo(() => {
-    if (storeInfo) {
-      const storeInCart = cart.find(
-        (currentStore) => currentStore.storeId === storeInfo.id
-      );
-      if (storeInCart) return storeInCart;
-    }
-    return undefined;
-  }, [storeInfo, cart]);
+  const onClickOption = (option) => {
+    setSelectedOption(option);
+  };
 
-  const totalPrice = useMemo(() => {
-    if (cartStore) return calcTotalPriceOrder(cartStore.listOrder);
-    return 0;
-  }, [cartStore, cart]);
-
-  const btnCart: ButtonType = useMemo(
-    () => ({
-      id: 1,
-      content: "Thêm vào giỏ",
-      type: "primary",
-      onClick: () => {
-        setOpenSheet(true);
-        setProductInfoPicked({ productId: Number(productId), isUpdate: true });
-      },
-    }),
-    [product, storeInfo, productId]
-  );
-
-  const btnPayment: ButtonType = useMemo(
-    () => ({
-      id: 2,
-      content: "Thanh toán",
-      type: "secondary",
-      onClick: () => {
-        navigate("/finish-order");
-      },
-    }),
-    [cartStore]
-  );
-
-  const listBtn = useMemo<ButtonType[]>(
-    () => (totalPrice > 0 ? [btnPayment, btnCart] : [btnCart]),
-    [totalPrice, btnCart, btnPayment]
-  );
-
-  useEffect(() => {
-    setHeader({
-      title: "",
-      rightIcon: <Icon icon="zi-share-external-1" />,
-    });
-    changeStatusBarColor();
-  }, []);
-  // @ts-ignore
   return (
-    <Page>
-      <div
-        className=" relative bg-white w-full"
-        style={{ paddingBottom: totalPrice > 0 ? "120px" : "80px" }}
-      >
-        {product && (
-          <>
-            <img
-              src={getImgUrl(product!.name)}
-              alt=""
-              className="w-full h-auto"
-            />
-            {/*{salePercentage && (*/}
-            {/*  <div className="absolute top-2.5 right-2.5 text-white font-medium text-sm px-2 py-1 bg-[#FF9743] w-auto h-auto rounded-lg">*/}
-            {/*    -{salePercentage}%*/}
-            {/*  </div>*/}
-            {/*)}*/}
-            <Box m={0} p={4} className="border-b">
-              <div className=" text-lg">{product?.name}</div>
-              <span className=" pt-1 font-semibold text-base text-primary">
-                <>
-                  <span className=" font-normal text-xs text-primary">đ</span>
-                  {convertPrice(product.price)}
-                </>
-              </span>
-              <span className=" pl-2 pt-1 font-medium text-sm text-zinc-400">
-                <>đ{convertPrice(product.specialPrice)}</>
-              </span>
-            </Box>
-            <Box
-              m={0}
-              px={4}
-              py={5}
-              className=" text-justify break-words whitespace-pre-line"
+    <PageLayout
+      title={product?.name || ""}
+      icon={ChevronLeftIcon}
+      onClickIcon={() => navigate("/")}
+    >
+      {product && (
+        <div className="flex flex-col relative h-full">
+          <div>
+            <Carousel
+              showThumbs={false}
+              showStatus={false}
+              className=""
+              showArrows={false}
+              infiniteLoop={true}
+              autoPlay={true}
             >
-              {product.description}
-            </Box>
-          </>
-        )}
-      </div>
+              {mockImage.map((item) => (
+                <div key={item.imageUrl}>
+                  <img src={item.imageUrl} alt="mock" />
+                </div>
+              ))}
+            </Carousel>
+          </div>
+          <div className="px-2 pt-2 pb-4 bg-white">
+            <h3 className="text-lg font-semibold">{product.name}</h3>
 
-      {!!totalPrice && (
-        <ButtonPriceFixed
-          quantity={cartStore!.listOrder.length}
-          totalPrice={totalPrice}
-          handleOnClick={() => navigate("/finish-order")}
-        />
+            {selectedOption && (
+              <h4 className="text-lg text-primary font-semibold">
+                {priceFormat(selectedOption.price, "VND")}
+              </h4>
+            )}
+
+            <p className="mt-4">{product.description}</p>
+          </div>
+
+          <div className="px-2 bg-white mt-4 py-2 pb-4">
+            <h4 className="text-md text-gray-600 font-semibold mb-4">
+              <span>Tùy chọn: {mockOption.labels.join(" & ")}</span>
+            </h4>
+
+            <div className="flex flex-wrap gap-2">
+              {mockOption.options.map((option) => {
+                const isSelected = option.id === selectedOption.id;
+                return (
+                  <span
+                    key={option.id}
+                    onClick={() => onClickOption(option)}
+                    className={clsx(
+                      "transition-colors text-sm bg-white border border-primary px-4 py-1 rounded-xl",
+                      {
+                        "bg-primary text-white": isSelected,
+                      }
+                    )}
+                  >
+                    {option.labels.join(" - ")}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="bg-white absolute bottom-0 w-full p-2 flex items-center gap-x-4">
+            <div className="flex items-center shrink-0">
+              <button
+                className="border rounded-md p-1"
+                onClick={onClickDecrease}
+              >
+                <MinusIcon className="w-6 h-6 text-primary" />
+              </button>
+              <div className="w-12 text-center text-lg font-semibold ">
+                {quantity}
+              </div>
+              <button
+                className="border rounded-md p-1"
+                onClick={onClickIncrease}
+              >
+                <PlusIcon className="w-6 h-6 text-primary" />
+              </button>
+            </div>
+            <div className="grow self-stretch">
+              <button className="bg-primary rounded-md w-full h-full text-white font-semibold">
+                Thêm vào giỏ hàng
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-      <ButtonFixed listBtn={listBtn} />
-    </Page>
+    </PageLayout>
   );
 };
 

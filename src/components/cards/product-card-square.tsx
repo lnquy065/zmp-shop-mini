@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { ProductSchema } from "../../interfaces/ProductSchema";
 import { priceFormatByProduct } from "../../utils/price-format";
 import { PlusCircleIcon } from "@heroicons/react/20/solid";
+import { useNavigate } from "zmp-ui";
 
 interface ProductCardSquareProps {
   children?: ReactNode;
@@ -9,8 +10,17 @@ interface ProductCardSquareProps {
 }
 
 export const ProductCardSquare = ({ product }: ProductCardSquareProps) => {
+  const navigate = useNavigate();
+
+  const onClickProduct = () => {
+    navigate(`/detail-product/${product.id}`);
+  };
+
   return (
-    <div className="relative flex flex-col justify-center items-center gap-y-1">
+    <div
+      className="relative flex flex-col justify-center items-center gap-y-1"
+      onClick={onClickProduct}
+    >
       <span className="absolute right-2 top-2">
         <PlusCircleIcon className="text-primary w-8 h-8 bg-gray-100 rounded-full" />
       </span>
