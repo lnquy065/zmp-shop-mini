@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useNavigate } from "zmp-ui";
+import { useLocation } from "react-router-dom";
 
 interface NavigatorProps {
   children?: ReactNode;
@@ -43,8 +44,8 @@ const NavigatorItem = [
 
 export const Navigator = (props: NavigatorProps) => {
   // get current react route
-  const currentPath = window.location.pathname;
   const navigate = useNavigate();
+  const currentPath = useLocation().pathname;
 
   const onClickNavigatorItem = (path: string) => {
     navigate(path);
