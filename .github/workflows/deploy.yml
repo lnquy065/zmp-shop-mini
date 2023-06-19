@@ -16,8 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        mini-app-id: ["${{ secrets.ZALO_APP_ID }}"]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        mini-app-id: ["2832578634743748881"]
 
     steps:
     - uses: actions/checkout@v3
