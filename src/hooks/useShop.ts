@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { ShopSchema } from "../interfaces/ShopSchema";
 
 export const useShop = () => {
-  const shopId = process.env.SHOP_ID;
+  const shopId = process.env.SHOP_ID || 123;
   return useQuery<ShopSchema>(["shop", shopId], async () => {
     return {
       id: "1",
