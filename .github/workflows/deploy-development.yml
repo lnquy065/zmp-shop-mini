@@ -29,7 +29,7 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
     - run: npm install
     - run: npm install -g zmp-cli
-    - run: npx zmp-developer-token deploy ${{ secrets.ZALO_APP_ID  }}
+    - run: npx zmp-developer-token deploy -D ${{ secrets.ZALO_APP_ID  }}
     - name: Report
       run: |
         echo "### Deployment success! :rocket:" >> $GITHUB_STEP_SUMMARY
