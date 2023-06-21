@@ -37,13 +37,12 @@ jobs:
     - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ matrix.mini-app-id }} zmp login
     - run: |
         printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> deploy-log.txt
-        echo "LOG='$(cat deploy-log.txt)'" >> $GITHUB_ENV
-    - run: echo $GITHUB_ENV
+    - run: echo $(cat deploy-log.txt)
     - uses: actions/checkout@v2
     - uses: actions-ecosystem/action-regex-match@v2
       id: regex-match
       with:
-        text: $DEPLOY_LOG
+        text: $(cat deploy-log.txt)
         regex: '^(.*?)View app at:(.*?)\n'
     - run: echo  ${{ steps.regex-match.outputs }}
     - name: Report
