@@ -38,11 +38,11 @@ jobs:
     - run: |
         printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> deploy-log.txt
 
-    - name: Convert JS code to Bash
+    - name: Get QR code from deployment
       run: |
         qrCode=$(echo $(cat deploy-log.txt) | sed -E 's/^(.*?)View app at: //g')
-        echo "$qrCode" >> $GITHUB_STEP_SUMMARY
-        echo "$qrCode"
+        echo -e "$qrCode" >> $GITHUB_STEP_SUMMARY
+        echo -e "$qrCode"
     
     - name: Report
       run: |
