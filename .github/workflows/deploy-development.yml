@@ -37,7 +37,7 @@ jobs:
     - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ matrix.mini-app-id }} zmp login
     - run: |
         printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> deploy-log.txt
-        echo "LOG=$(cat deploy-log.txt)" >> $GITHUB_ENV
+        echo "LOG='$(cat deploy-log.txt)'" >> $GITHUB_ENV
     - run: echo $GITHUB_ENV
     - uses: actions/checkout@v2
     - uses: actions-ecosystem/action-regex-match@v2
