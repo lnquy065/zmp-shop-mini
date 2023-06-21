@@ -26,7 +26,6 @@ jobs:
       with:
         node-version: 18.x
         cache: 'npm'
-    - run: echo ${{ secrets.ZALO_APP_ID }} ${{ secrets.ZALO_APP_SECRET }} ${{ secrets.ZALO_REFRESH_TOKEN }}
     - run: npx zmp-developer-token login ${{ secrets.ZALO_APP_ID }} ${{ secrets.ZALO_APP_SECRET }} ${{ secrets.ZALO_REFRESH_TOKEN }} >> $GITHUB_ENV
     - uses: hmanzur/actions-set-secret@v2.0.0
       with:
@@ -36,8 +35,10 @@ jobs:
     - run: npm install
     - run: npm install -g zmp-cli
     - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ matrix.mini-app-id }} zmp login
-    - run: printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> $DEPLOY_LOG
-    - run: echo $DEPLOY_LOG
+    - run: |
+        printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> deploy-log.txt
+        echo "LOG=$(cat deploy-log.txt)" >> $GITHUB_ENV
+    - run: echo $GITHUB_ENV
     - uses: actions/checkout@v2
     - uses: actions-ecosystem/action-regex-match@v2
       id: regex-match
