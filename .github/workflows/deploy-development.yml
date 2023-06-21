@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Dev-Deployment
 
 on:
   push:
@@ -29,7 +29,8 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
     - run: npm install
     - run: npm install -g zmp-cli
-    - run: npx zmp-developer-token deploy -D ${{ secrets.ZALO_APP_ID  }}
+    - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ secrets.ZALO_APP_ID }} zmp login
+    - run: printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> $GITHUB_STEP_SUMMARY
     - name: Report
       run: |
         echo "### Deployment success! :rocket:" >> $GITHUB_STEP_SUMMARY
