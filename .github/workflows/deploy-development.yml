@@ -23,7 +23,8 @@ jobs:
       with:
         node-version: 18.x
         cache: 'npm'
-    - run: npx zmp-developer-token login ${{ env.APP_ID }} ${{ secrets.ZALO_APP_SECRET }} ${{ secrets.ZALO_REFRESH_TOKEN }} >> $GITHUB_ENV
+    - run: echo ${{ secrets.ZALO_APP_ID }} ${{ secrets.ZALO_APP_SECRET }} ${{ secrets.ZALO_REFRESH_TOKEN }}
+    - run: npx zmp-developer-token login ${{ secrets.ZALO_APP_ID }} ${{ secrets.ZALO_APP_SECRET }} ${{ secrets.ZALO_REFRESH_TOKEN }} >> $GITHUB_ENV
     - uses: hmanzur/actions-set-secret@v2.0.0
       with:
         name: 'ZALO_REFRESH_TOKEN'
@@ -31,7 +32,7 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
     - run: npm install
     - run: npm install -g zmp-cli
-    - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ env.APP_ID }} zmp login
+    - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ secrets.ZALO_APP_ID }} zmp login
     - run: printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> $GITHUB_STEP_SUMMARY
     - name: Report
       run: |
