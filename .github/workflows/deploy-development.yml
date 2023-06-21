@@ -42,7 +42,7 @@ jobs:
       run: |
         qrCode=$(echo $(cat deploy-log.txt) | sed -E 's/^(.*?)View app at:(.*?)\n//g')
         echo "$qrCode" >> $GITHUB_STEP_SUMMARY
-        echo $(qrCode)
+        echo "$qrCode"
     
     - name: Report
       run: |
