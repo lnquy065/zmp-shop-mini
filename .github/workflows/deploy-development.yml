@@ -10,13 +10,16 @@ on:
     branches: [ "development" ]
   workflow_dispatch:
   
-env:
-  APP_ID: "2832578634743748881"
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        mini-app-id: ["2832578634743748881"]
+    
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -32,7 +35,7 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }}
     - run: npm install
     - run: npm install -g zmp-cli
-    - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ secrets.ZALO_APP_ID }} zmp login
+    - run: printf "\033[B\n$NEW_ACCESS_TOKEN" | APP_ID=${{ matrix.mini-app-id }} zmp login
     - run: printf "\n$(git log -1 --pretty=%B)" | zmp deploy >> $GITHUB_STEP_SUMMARY
     - name: Report
       run: |
