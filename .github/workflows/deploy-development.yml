@@ -40,9 +40,9 @@ jobs:
 
     - name: Get QR code from deployment
       run: |
-        qrCode=$(echo -e $(cat deploy-log.txt) | sed -E 's/^(.*?)View app at: //g')
-        echo -e "$qrCode" >> $GITHUB_STEP_SUMMARY
-        echo -e "$qrCode"
+        qrCode=$(cat deploy-log.txt | sed -E 's/^(.*?)View app at: //g')
+        printf "%b" "$qrCode" >> $GITHUB_STEP_SUMMARY
+        printf "%b" "$qrCode"
     
     - name: Report
       run: |
